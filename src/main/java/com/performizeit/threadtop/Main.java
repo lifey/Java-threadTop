@@ -16,6 +16,7 @@
  */
 package com.performizeit.threadtop;
 
+import jmxsupport.JMXConnection;
 import java.util.ArrayList;
 import uk.co.flamingpenguin.jewel.cli.CliFactory;
 

@@ -14,14 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.performizeit.threadtop;
+package jmxsupport;
 
 import com.sun.tools.attach.AgentInitializationException;
 import com.sun.tools.attach.AgentLoadException;
 import com.sun.tools.attach.AttachNotSupportedException;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -59,6 +62,7 @@ public class JMXConnection {
     }
 
     public JMXConnection(String pid) throws AttachNotSupportedException, IOException, AgentLoadException, AgentInitializationException {
+        addToolsJar();
         connectURL = pid;
         // attach to the target application
         com.sun.tools.attach.VirtualMachine vm =
@@ -101,7 +105,7 @@ public class JMXConnection {
         host = serverUrl.substring(atIndex + 1, colonIndex);
         port = serverUrl.substring(colonIndex + 1);
         connectURL = host + ":" + port;
-    //    System.out.println("[" + host + "] [" + port + "] [" + userName + "] [" + userPassword + "]");
+        //    System.out.println("[" + host + "] [" + port + "] [" + userName + "] [" + userPassword + "]");
         serviceURL = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://" + host + ":" + port + "/jmxrmi");
     }
     MBeanServerConnection server = null;
@@ -200,12 +204,57 @@ public class JMXConnection {
         long[] threadsAllocBytes = (long[]) server.invoke(THREADING, "getThreadAllocatedBytes", params, signature);
         return threadsAllocBytes;
     }
-        private boolean supportAdvFeatures = true;
+    private boolean supportAdvFeatures = true;
 
-   public boolean isJava16_25andAbove() {
+    public boolean isJava16_25andAbove() {
         return supportAdvFeatures;
     }
-   public void unsetJava16_25andAbove() {
-       supportAdvFeatures = false;
-   }
+
+    public void unsetJava16_25andAbove() {
+        supportAdvFeatures = false;
+    }
+
+    public static Class addToolsJar() {
+        try {
+            return com.sun.tools.attach.VirtualMachine.class;
+        } catch (Throwable t) {
+            System.out.println("tools.jar not in class path ");
+            File toolsJar = new File(System.getProperty("java.home") + "/lib/tools.jar"); //when jdk
+            System.out.println("try:" + toolsJar);
+            if (toolsJar.exists()) {
+                addURL(toolsJar);
+                System.out.println(toolsJar);
+            } else {
+                toolsJar = new File(System.getProperty("java.home") + "/../lib/tools.jar"); // when jre part of jdk
+                System.out.println("try:" + toolsJar);
+                if (toolsJar.exists()) {
+                    addURL(toolsJar);
+                    System.out.println(toolsJar);
+                } else {
+                    System.out.println("Unable to locate tools.jar pls add it to classpath");
+                }
+            }
+        }
+        return com.sun.tools.attach.VirtualMachine.class;
+
+
+
+    }
+
+    public static void addURL(File file) throws RuntimeException {
+        try {
+            URL url = file.toURL();
+            URLClassLoader classLoader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+            Class clazz = URLClassLoader.class;
+
+            // Use reflection
+            Method method = clazz.getDeclaredMethod("addURL", new Class[]{URL.class});
+            method.setAccessible(true);
+            method.invoke(classLoader, new Object[]{url});
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        }
+    }
 }

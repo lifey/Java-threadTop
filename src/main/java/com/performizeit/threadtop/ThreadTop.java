@@ -16,6 +16,7 @@
  */
 package com.performizeit.threadtop;
 
+import jmxsupport.JMXConnection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -25,7 +26,7 @@ import java.util.Locale;
 import javax.management.Attribute;
 import javax.management.MBeanServerConnection;
 import javax.management.openmbean.CompositeData;
-import static com.performizeit.threadtop.JMXConnection.*;
+import static jmxsupport.JMXConnection.*;
 
 public class ThreadTop {
 

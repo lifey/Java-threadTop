@@ -218,7 +218,7 @@ public class JMXConnection {
         try {
             return com.sun.tools.attach.VirtualMachine.class;
         } catch (Throwable t) {
-            System.out.println("tools.jar not in class path ");
+            System.out.println("tools.jar not in class path from"+ System.getProperty("java.home"));
             File toolsJar = new File(System.getProperty("java.home") + "/lib/tools.jar"); //when jdk
             System.out.println("try:" + toolsJar);
             if (toolsJar.exists()) {
@@ -229,7 +229,7 @@ public class JMXConnection {
                 System.out.println("try:" + toolsJar);
                 if (toolsJar.exists()) {
                     addURL(toolsJar);
-                    System.out.println(toolsJar);
+                    System.out.println("Found:"+toolsJar);
                 } else {
                     System.out.println("Unable to locate tools.jar pls add it to classpath");
                 }

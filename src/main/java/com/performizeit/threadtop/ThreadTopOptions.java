@@ -42,6 +42,8 @@ public interface ThreadTopOptions {
 
     @Option(shortName = "d")
     boolean isMeasureThreadContention();
+    @Option(shortName = "w")
+    boolean isAddAllThreadsAndWindowsPerfMonData();    
 
     @Option(shortName = "a")
     boolean isMeasureThreadAlloc();

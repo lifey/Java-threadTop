@@ -17,9 +17,9 @@
 package com.performizeit.threadtop;
 
 import java.util.List;
-import uk.co.flamingpenguin.jewel.cli.CommandLineInterface;
-import uk.co.flamingpenguin.jewel.cli.Option;
-import uk.co.flamingpenguin.jewel.cli.Unparsed;
+import com.lexicalscope.jewel.cli.CommandLineInterface;
+import com.lexicalscope.jewel.cli.Option;
+import com.lexicalscope.jewel.cli.Unparsed;
 
 /**
  *
@@ -34,7 +34,7 @@ public interface ThreadTopOptions {
     @Option(defaultValue = "1", shortName = "i", description = "Number of iterations [default:1]")
     int getIterations();
 
-    @Option(defaultValue = "1", shortName = "n", description = "Number of top threads to show[default:1]")
+    @Option(defaultValue = "10", shortName = "n", description = "Number of top threads to show[default:10]")
     long getNum();
 
     @Option(shortName = "c")
@@ -48,7 +48,7 @@ public interface ThreadTopOptions {
     @Option(shortName = "a")
     boolean isMeasureThreadAlloc();
 
-    @Option(defaultValue = "CPU", shortName = "s", description = "Sort by CPU/CONTEND/ALLOC/NAME [default:CPU]")
+    @Option(defaultValue = "CPU", shortName = "s", description = "Sort by (C)PU/CONTEN(D)/(A)LLOC/(N)AME [default:C]")
     String getSort();
 
 
@@ -62,6 +62,6 @@ public interface ThreadTopOptions {
 
     @Option(defaultValue = ".*", shortName = "r", description = "Thread name regex filter [default:.*]")
     public String getRegExp();
-        @Unparsed()
+        @Unparsed(description = "pid | host:port ")
     List<String> getConectionStringList();
 }

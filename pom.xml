@@ -97,12 +97,12 @@
             <artifactId>jewelcli</artifactId>
             <version>0.8.3</version>
         </dependency>
+        <!-- mvn install:install-file -Dfile=tools.jar -DgroupId=com.oracle -DartifactId=tools -Dversion=7.17 -Dpackaging=jar-->
         <dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>toolsjar</artifactId>
-            <version>whatever</version>
-            <scope>system</scope>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
+            <groupId>com.oracle</groupId>
+            <artifactId>tools</artifactId>
+            <version>7.17</version>
+            
         </dependency>
 
     </dependencies>

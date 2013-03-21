@@ -22,8 +22,16 @@
             <directory>target/libs</directory>
             <outputDirectory>libs</outputDirectory>
             <includes>
-                <include>*.jar</include>
+                <include>jew*.jar</include>
+                
             </includes>
         </fileSet>
+                <fileSet>
+            <directory>src/main/scripts</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>            
+        </fileSet> 
     </fileSets>
 </assembly>

@@ -18,14 +18,14 @@ package com.performizeit.threadtop;
 
 import com.performizeit.jmxsupport.JMXConnection;
 import java.util.ArrayList;
-import uk.co.flamingpenguin.jewel.cli.CliFactory;
+import com.lexicalscope.jewel.cli.CliFactory;
 
 public class Main {
 
     public static void main(String args[]) throws Exception {
         if (args.length < 1) {
             System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
-            System.out.println("Enable remote JMX:\n   -Dcom.sun.management.jmxremote\n   -Dcom.sun.management.jmxremote.port=29601\n   -Dcom.sun.management.jmxremote.authenticate=false\n   -Dcom.sun.management.jmxremote.ssl=false\n   -Xloggc:gc.log");
+            System.out.println("Enable remote JMX:\n   -Dcom.sun.management.jmxremote\n   -Dcom.sun.management.jmxremote.port=[port]\n   -Dcom.sun.management.jmxremote.authenticate=false\n   -Dcom.sun.management.jmxremote.ssl=false\n");
             System.exit(1);
         }
 
@@ -34,20 +34,26 @@ public class Main {
 
 
         ThreadTopOptions opts = CliFactory.parseArguments(ThreadTopOptions.class, args);
-                String passwd = opts.getPassword();
-         ArrayList<JMXConnection> servers = new ArrayList<JMXConnection>();
-        for (String hostPortUser:opts.getConectionStringList()) {
+        String passwd = opts.getPassword();
+        ArrayList<JMXConnection> servers = new ArrayList<JMXConnection>();
+        if (opts.getConectionStringList().size() ==0) {
+            System.out.println("Missing process id or host:port to connect");
+            System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
+            System.out.println("Enable remote JMX:\n   -Dcom.sun.management.jmxremote\n   -Dcom.sun.management.jmxremote.port=[port]\n   -Dcom.sun.management.jmxremote.authenticate=false\n   -Dcom.sun.management.jmxremote.ssl=false\n");
+            System.exit(1);
+           }
+        for (String hostPortUser : opts.getConectionStringList()) {
 
 
-        JMXConnection server;
-        try {
-            Integer.parseInt(hostPortUser);
-            server = new JMXConnection(hostPortUser);
-        } catch (NumberFormatException e) {
-            server = new JMXConnection(hostPortUser, passwd);
-        }
-        
-        servers.add(server);
+            JMXConnection server;
+            try {
+                Integer.parseInt(hostPortUser);
+                server = new JMXConnection(hostPortUser);
+            } catch (NumberFormatException e) {
+                server = new JMXConnection(hostPortUser, passwd);
+            }
+
+            servers.add(server);
         }
         ThreadTop calc = new ThreadTop(servers, opts.getTimeToMeasure(), opts.getNum(), opts.getSort(), opts.isMeasureThreadCPU(), opts.isMeasureThreadAlloc(), opts.isMeasureThreadContention(), opts.getRegExp());
 

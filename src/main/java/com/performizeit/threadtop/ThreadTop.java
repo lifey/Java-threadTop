@@ -62,11 +62,11 @@ public class ThreadTop {
     }
 
     private void sortBy() {
-        if (!measureCPU && !measureContention && !measureBytesAllocated || sortByStr.equals("NAME")) {
+        if (!measureCPU && !measureContention && !measureBytesAllocated || sortByStr.toLowerCase().startsWith("n")) {
             sortBy = SortBy.NAME;
-        } else if (!measureCPU && !measureBytesAllocated || sortByStr.equals("CONTEND")) {
+        } else if (!measureCPU && !measureBytesAllocated || sortByStr.toLowerCase().contains("d")) {
             sortBy = SortBy.CONTENTION;
-        } else if (!measureCPU || sortByStr.equals("ALLOC")) {
+        } else if (!measureCPU || sortByStr.toLowerCase().startsWith("a")) {
             sortBy = SortBy.ALLOC_BYTES;
         } else {
             sortBy = SortBy.CPU;
@@ -241,7 +241,7 @@ private void buildThreadInfo(JMXConnection server,HashMap<MyThreadInfo,MyThreadI
                 if (measureBytesAllocated) {
                     long threadAllocBytes[] = server.getThreadsAllocBytes( filteredThreadIdsArr);
                     for (int i = 0; i < filteredThreadIdsArr.length; i++) {
-                        MyThreadInfo mtis = threadMap.get(filteredThreadIdsArr[i]);
+                        MyThreadInfo mtis = threadMap.get(MyThreadInfo.createProto(server.getConnectURL(),filteredThreadIdsArr[i]) );
                         mtis.setAllocBytes(threadAllocBytes[i]);
                     }
 
@@ -252,7 +252,8 @@ private void buildThreadInfo(JMXConnection server,HashMap<MyThreadInfo,MyThreadI
                 if (sortByStr.equals("ALLOC")) {
                     sortByStr = "";
                 }
-                System.err.println("JVM do not support advanced APIs using slower APIs");
+                System.err.println("JVM do not support advanced APIs using slower APIs" );
+                e.printStackTrace();
             }
 
         }

@@ -18,7 +18,7 @@ import static com.performizeit.threadtop.localext.OSUtil.*;
  */
 public class ThreadNamesAndIdsOnly {
 
-    static HashMap<Integer, PerfmonThreadData> threads = new HashMap<>();
+    static HashMap<Integer, PerfmonThreadData> threads = new HashMap<Integer, PerfmonThreadData>();
 
     public static void main(String[] args) throws FileNotFoundException, IOException, InterruptedException {
         if (args.length < 2) {

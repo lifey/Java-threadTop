@@ -24,7 +24,9 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
         if (args.length < 1) {
-            System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
+            String cliMessage = CliFactory.createCli(ThreadTopOptions.class).getHelpMessage();
+            String correctMessage = cliMessage.replace("ARGUMENTS...", "<ProcessId> | <hostname:port> | <ip:port>"   );
+            System.out.println(correctMessage);
             System.out.println("Enable remote JMX:\n   " +
                     "-Dcom.sun.management.jmxremote\n   " +
                     "-Dcom.sun.management.jmxremote.port=[port]\n   " +

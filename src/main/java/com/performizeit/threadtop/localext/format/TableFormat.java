@@ -19,8 +19,8 @@ public class TableFormat {
     public TableFormat() {
         sb = new StringBuilder();
         formatter = new Formatter(sb, Locale.US);
-        columnsByName = new HashMap<>();
-        columnsOrder = new ArrayList<>();
+        columnsByName = new HashMap<String,ColumnFormat>();
+        columnsOrder = new ArrayList<String>();
     }
 
     /**
@@ -111,7 +111,7 @@ public class TableFormat {
         return result;
     }
 
-    public void printRaw() {
+    public void printRow() {
         System.out.println(formatter.toString());
         clean();
     }

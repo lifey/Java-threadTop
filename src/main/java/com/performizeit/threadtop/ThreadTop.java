@@ -188,13 +188,14 @@ public class ThreadTop {
            // float ts = inSecsTimestamp(server.getUptime());
             TableFormat tableFormat = new TableFormat();
             tableFormat.addColumn(new ColumnFormat(TS,"%10s ","%10.3f "));
-            tableFormat.addColumn(new ColumnFormat(PROCID,"%-20s "));
+            tableFormat.addColumn(new ColumnFormat(PROCID,"%-10s "));
             tableFormat.addColumn(new ColumnFormat(TID,"%5s ","%5d "));
             if(measureContention) {
                 tableFormat.addColumn(new ColumnFormat(BLOCKED_TIME,sortBy == SortBy.CONTENTION,"%6s ","%6d "));
                 tableFormat.addColumn(new ColumnFormat(BL_PERCENT,"%4s ","%5.1f "));
+                tableFormat.addColumn(new ColumnFormat(BL_Count,"%5s ", "%4d "));
             }
-            tableFormat.addColumn(new ColumnFormat(BL_Count,"%5s ", "%4d "));
+            
             if(measureCPU) {
                 tableFormat.addColumn(new ColumnFormat(CPU,sortBy == SortBy.CPU,"%8s ","%8d "));
                 tableFormat.addColumn(new ColumnFormat(CPU_PERCENT,sortBy == SortBy.CPU,"%5s ","%5.1f "));
@@ -234,11 +235,11 @@ public class ThreadTop {
                         tableFormat.format(STACK_TRACE, stackTraceEntries[j]);
                         // do not print the last row
                         if(j != stackTraceEntries.length-1) {
-                            tableFormat.printRaw();
+                            tableFormat.printRow();
                         }
                     }
                 }
-                tableFormat.printRaw();
+                tableFormat.printRow();
             }
     }
 

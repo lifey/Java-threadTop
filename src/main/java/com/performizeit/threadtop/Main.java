@@ -27,7 +27,9 @@ public class Main {
             String cliMessage = CliFactory.createCli(ThreadTopOptions.class).getHelpMessage();
             String correctMessage = cliMessage.replace("ARGUMENTS...", "<ProcessId> | <hostname:port> | <ip:port>"   );
             System.out.println(correctMessage);
-            System.out.println("Enable remote JMX:\n   " +
+            System.out.println("Threadtop can connect to a process on the same machine with pid\n"+
+                    "And via JMX port for a remote process.\n"+  
+                    "To enable remote JMX and the following command line params:\n   " +
                     "-Dcom.sun.management.jmxremote\n   " +
                     "-Dcom.sun.management.jmxremote.port=[port]\n   " +
                     "-Dcom.sun.management.jmxremote.authenticate=false\n   " +

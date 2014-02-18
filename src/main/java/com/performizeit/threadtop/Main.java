@@ -24,8 +24,16 @@ public class Main {
 
     public static void main(String args[]) throws Exception {
         if (args.length < 1) {
-            System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
-            System.out.println("Enable remote JMX:\n   -Dcom.sun.management.jmxremote\n   -Dcom.sun.management.jmxremote.port=[port]\n   -Dcom.sun.management.jmxremote.authenticate=false\n   -Dcom.sun.management.jmxremote.ssl=false\n");
+            String cliMessage = CliFactory.createCli(ThreadTopOptions.class).getHelpMessage();
+            String correctMessage = cliMessage.replace("ARGUMENTS...", "<ProcessId> | <hostname:port> | <ip:port>"   );
+            System.out.println(correctMessage);
+            System.out.println("Threadtop can connect to a process on the same machine with pid\n"+
+                    "And via JMX port for a remote process.\n"+  
+                    "To enable remote JMX and the following command line params:\n   " +
+                    "-Dcom.sun.management.jmxremote\n   " +
+                    "-Dcom.sun.management.jmxremote.port=[port]\n   " +
+                    "-Dcom.sun.management.jmxremote.authenticate=false\n   " +
+                    "-Dcom.sun.management.jmxremote.ssl=false\n");
             System.exit(1);
         }
 
@@ -55,7 +63,14 @@ public class Main {
 
             servers.add(server);
         }
-        ThreadTop calc = new ThreadTop(servers, opts.getTimeToMeasure(), opts.getNum(), opts.getSort(), opts.isMeasureThreadCPU(), opts.isMeasureThreadAlloc(), opts.isMeasureThreadContention(), opts.getRegExp());
+
+        int stackTraceEntriesNo = opts.getStackTraceEntriesNo();
+        // if stackTrace option is selected, set default stackTraceEntries to 1
+        if(opts.getStackTraceEntriesNo() == 0 && opts.isPrintStackTrace()) {
+            stackTraceEntriesNo = 1;
+        }
+        ThreadTop calc = new ThreadTop(servers, opts.getTimeToMeasure(), opts.getNum(), opts.getSort(), opts.isMeasureThreadCPU(), opts.isMeasureThreadAlloc(),
+                opts.isMeasureThreadContention(), opts.getRegExp(), stackTraceEntriesNo);
 
         calc.getContendedThreads(opts.getIterations());
     }

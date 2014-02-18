@@ -172,11 +172,10 @@ public class JMXConnection {
         return !userName.isEmpty();
     }
 
-    public CompositeData[] getThreads(long[] thIds) throws Exception {
-
-        String[] a = {"[J", "int"};
-        Object[] b = {thIds, 0};
-        CompositeData[] threads = (CompositeData[]) server.invoke(THREADING, "getThreadInfo", b, a);
+    public CompositeData[] getThreads(long[] thIds, int stackTraceEntriesNo) throws Exception {
+        String[] signature = {"[J", "int"};
+        Object[] params = {thIds, stackTraceEntriesNo};
+        CompositeData[] threads = (CompositeData[]) server.invoke(THREADING, "getThreadInfo", params, signature);
         return threads;
     }
 

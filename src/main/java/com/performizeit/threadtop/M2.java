@@ -4,8 +4,6 @@
  */
 package com.performizeit.threadtop;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import com.lexicalscope.jewel.cli.ArgumentValidationException;
 import com.lexicalscope.jewel.cli.CliFactory;
 
@@ -23,6 +21,8 @@ public class M2 {
             System.out.println(opts.isMeasureThreadContention());
             System.out.println(opts.isMeasureThreadAlloc());
             System.out.println(opts.getSort());
+            System.out.println(opts.isPrintStackTrace());
+            System.out.println(opts.getStackTraceEntriesNo());
             System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
         } catch (ArgumentValidationException ex) {
             System.out.println(ex.getMessage());

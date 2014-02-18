@@ -17,18 +17,30 @@
 package com.performizeit.threadtop;
 
 import com.performizeit.jmxsupport.JMXConnection;
+import com.performizeit.threadtop.localext.format.ColumnFormat;
+import com.performizeit.threadtop.localext.format.TableFormat;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Formatter;
 import java.util.HashMap;
-import java.util.Locale;
 import javax.management.Attribute;
-import javax.management.MBeanServerConnection;
 import javax.management.openmbean.CompositeData;
 import static com.performizeit.jmxsupport.JMXConnection.*;
 
 public class ThreadTop {
+    // printed columns
+    public static final String TS = "TS";
+    public static final String PROCID = "PROCID";
+    public static final String TID = "TID";
+    public static final String BLOCKED_TIME = "BL";
+    public static final String BL_PERCENT = "BL%";
+    public static final String BL_Count = "#BL";
+    public static final String CPU = "CPU";
+    public static final String CPU_PERCENT = "CPU%";
+    public static final String ALLOC = "ALLOC";
+    public static final String NAME = "Name";
+    public static final String STACK_TRACE = "Stack Trace";
 
     public enum SortBy {
 
@@ -46,8 +58,14 @@ public class ThreadTop {
     boolean measureBytesAllocated;
     boolean measureContention;
     String filterThreadRegExp;
+    int stackTraceEntriesNo=0; // no of thread stack trace entries to print
 
-    public ThreadTop(ArrayList<JMXConnection> servers, long timeToMeasure, long numThreads, String sortByStr, boolean measureCPU, boolean measureBytesAllocated, boolean measureContention, String filterThreadRegExp) throws Exception {
+    /**
+     * Ctor
+     */
+    public ThreadTop(ArrayList<JMXConnection> servers, long timeToMeasure, long numThreads, String sortByStr, boolean measureCPU,
+                     boolean measureBytesAllocated, boolean measureContention, String filterThreadRegExp,
+                     int stackTraceEntriesNo) throws Exception {
         this.servers = servers;
         this.timeToMeasure = timeToMeasure;
         this.numThreads = numThreads;
@@ -56,6 +74,10 @@ public class ThreadTop {
         this.measureBytesAllocated = measureBytesAllocated;
         this.filterThreadRegExp = filterThreadRegExp;
         this.sortByStr = sortByStr;
+<<<<<<< HEAD
+=======
+        this.stackTraceEntriesNo = stackTraceEntriesNo;
+>>>>>>> 541f5d39b258a2c82c866d350359066d09a58db4
     }
 
     private void sortBy() {
@@ -174,40 +196,63 @@ public class ThreadTop {
             }
             Arrays.sort(diffThreadInfoArr, comp);
            // float ts = inSecsTimestamp(server.getUptime());
-            StringBuilder sb = new StringBuilder();
-            Formatter formatter = new Formatter(sb, Locale.US);
-            if (nSamp == 0) {
-                formatter.format("%10s %-20s %5s %6s %4s %5s %8s %5s %8s %-50s", "TS", "PROCID","TID", sortBy == SortBy.CONTENTION ? ">BL" : "BL", "BL%", "#BL", sortBy == SortBy.CPU ? ">CPU" : "CPU", "CPU%", sortBy == SortBy.ALLOC_BYTES ? ">ALLOC" : "ALLOC", sortBy == SortBy.NAME ? ">Name" : "Name");
-                System.out.println(formatter.toString());
+            TableFormat tableFormat = new TableFormat();
+            tableFormat.addColumn(new ColumnFormat(TS,"%10s ","%10.3f "));
+            tableFormat.addColumn(new ColumnFormat(PROCID,"%-10s "));
+            tableFormat.addColumn(new ColumnFormat(TID,"%5s ","%5d "));
+            if(measureContention) {
+                tableFormat.addColumn(new ColumnFormat(BLOCKED_TIME,sortBy == SortBy.CONTENTION,"%6s ","%6d "));
+                tableFormat.addColumn(new ColumnFormat(BL_PERCENT,"%4s ","%5.1f "));
+                tableFormat.addColumn(new ColumnFormat(BL_Count,"%5s ", "%4d "));
             }
-            sb.setLength(0);
+            
+            if(measureCPU) {
+                tableFormat.addColumn(new ColumnFormat(CPU,sortBy == SortBy.CPU,"%8s ","%8d "));
+                tableFormat.addColumn(new ColumnFormat(CPU_PERCENT,sortBy == SortBy.CPU,"%5s ","%5.1f "));
+            }
+            if(measureBytesAllocated) {
+                tableFormat.addColumn(new ColumnFormat(ALLOC,sortBy == SortBy.ALLOC_BYTES,"%8s ","%8d "));
+            }
+            tableFormat.addColumn(new ColumnFormat(NAME,sortBy == SortBy.NAME ,"%-50s "));
+
+            if(stackTraceEntriesNo >0) {
+                tableFormat.addColumn(new ColumnFormat(STACK_TRACE, "%-50s "));
+            }
+            if (nSamp == 0) {
+                tableFormat.printHeader();
+            }
+            tableFormat.clean();
 
             for (int i = 0; i < ((diffThreadInfoArr.length > numThreads) ? numThreads : diffThreadInfoArr.length); i++) {
-                formatter.format("%10.3f %-20s %5d ", 0.0 /*ts*/, diffThreadInfoArr[i].getProcConnect() ,diffThreadInfoArr[i].getId());
-                if (measureContention) {
-                    formatter.format("%6d %5.1f %4d ", diffThreadInfoArr[i].getBlockedTime(), (100.0 * diffThreadInfoArr[i].getBlockedTime() / timeToMeasure), diffThreadInfoArr[i].getBlockedCount());
-                } else {
-                    formatter.format("%6s %6s %4d ", "N/A", "N/A", diffThreadInfoArr[i].getBlockedCount());
+                tableFormat.format(TS,0.0);   //todo ask Haim
+                tableFormat.format(PROCID,diffThreadInfoArr[i].getProcConnect());
+                tableFormat.format(TID, diffThreadInfoArr[i].getId());
+                tableFormat.format(BLOCKED_TIME, diffThreadInfoArr[i].getBlockedTime());
+                tableFormat.format(BL_PERCENT,(100.0 * diffThreadInfoArr[i].getBlockedTime() / timeToMeasure));
+                tableFormat.format(BL_Count, diffThreadInfoArr[i].getBlockedCount());
+                tableFormat.format(CPU, diffThreadInfoArr[i].getCpuTime() / 1000 / 1000);
+                tableFormat.format(CPU_PERCENT, (100.0 * diffThreadInfoArr[i].getCpuTime() / 1000 / 1000 / timeToMeasure));
+                tableFormat.format(ALLOC, diffThreadInfoArr[i].getAllocBytes());
+                tableFormat.format(NAME, diffThreadInfoArr[i].getName());
+                if(stackTraceEntriesNo > 0) {
+                    String[] stackTraceEntries = diffThreadInfoArr[i].getStackTrace();
+                    for(int j=0; j<stackTraceEntries.length; j++ ) {
+                        // for the second stack trace entry shift to the stack trace column
+                        if(j>0) {
+                            int columnNums = tableFormat.getColumnNo();
+                            tableFormat.formatEmptyLine(columnNums-1);
+                        }
+                        tableFormat.format(STACK_TRACE, stackTraceEntries[j]);
+                        // do not print the last row
+                        if(j != stackTraceEntries.length-1) {
+                            tableFormat.printRow();
+                        }
+                    }
                 }
-                if (measureCPU) {
-                    formatter.format("%8d %5.1f ", diffThreadInfoArr[i].getCpuTime() / 1000 / 1000, (100.0 * diffThreadInfoArr[i].getCpuTime() / 1000 / 1000 / timeToMeasure));
-                } else {
-                    formatter.format("%8s %6s ", "N/A", "N/A");
-
-                }
-                if (measureBytesAllocated) {
-                    formatter.format("%8d ", diffThreadInfoArr[i].getAllocBytes());
-                } else {
-                    formatter.format("%8s ", "N/A");
-
-                }
-                formatter.format("%-50s", diffThreadInfoArr[i].getName());
-                System.out.println(formatter.toString());
-                sb.setLength(0);
+                tableFormat.printRow();
             }
-        
     }
-    
+
     if (measureContention
 
     
@@ -215,9 +260,9 @@ public class ThreadTop {
             revertContentionMonitoring();
     }
 }
-private void buildThreadInfo(JMXConnection server,HashMap<MyThreadInfo,MyThreadInfo> threadMap) throws Exception {
+    private void buildThreadInfo(JMXConnection server,HashMap<MyThreadInfo,MyThreadInfo> threadMap) throws Exception {
         long[] thIds = getThreadIds(server);
-        CompositeData[] threadsBaseData = server.getThreads( thIds);
+        CompositeData[] threadsBaseData = server.getThreads( thIds, stackTraceEntriesNo);
         ThreadFilter tf = new ThreadFilterByRegExp(filterThreadRegExp);//".*((RMI)|(JMX)|(ajp)).*"
         ArrayList<Long> filteredThreadIds = new ArrayList<Long>();
          

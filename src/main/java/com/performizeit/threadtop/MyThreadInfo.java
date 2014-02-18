@@ -16,6 +16,8 @@
  */
 package com.performizeit.threadtop;
 
+import com.performizeit.threadtop.localext.StackTraceParser;
+
 import javax.management.openmbean.CompositeData;
 
 public class MyThreadInfo {
@@ -27,6 +29,7 @@ public class MyThreadInfo {
     protected long cpuTime;
     protected long allocBytes;
     protected String procConnect;
+    protected CompositeData[] stackTraceElems;
 
     @Override
     public boolean equals(Object obj) {
@@ -59,7 +62,12 @@ public class MyThreadInfo {
         blockedTime = toLong(thread.get("blockedTime"),0);
         blockedCount = toLong(thread.get("blockedCount"), 0);
         name = (String) thread.get("threadName");
+<<<<<<< HEAD
         id = toLong(thread.get("threadId"),0);
+=======
+        id = (Long) thread.get("threadId");
+        stackTraceElems = (CompositeData []) thread.get("stackTrace");
+>>>>>>> 541f5d39b258a2c82c866d350359066d09a58db4
         this.procConnect = procConnect;
     }
 
@@ -77,6 +85,7 @@ public class MyThreadInfo {
         name = t1.name;
         id = t1.id;
         procConnect=t1.procConnect;
+        stackTraceElems = t2.stackTraceElems; //todo ask Haim
     }
 
     public long getId() {
@@ -122,5 +131,8 @@ public class MyThreadInfo {
     public void setProcConnect(String procConnect) {
         this.procConnect = procConnect;
     }
-    
+
+    public String[] getStackTrace() {
+        return StackTraceParser.parseStackTrace(stackTraceElems);
+    }
 }

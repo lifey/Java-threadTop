@@ -58,10 +58,15 @@ public interface ThreadTopOptions {
     @Option(defaultToNull = true, shortName = "p", description = "Set password for remote connect [optional]")
     String getPassword();
 
-
-
     @Option(defaultValue = ".*", shortName = "r", description = "Thread name regex filter [default:.*]")
     public String getRegExp();
         @Unparsed(description = "pid | host:port ")
     List<String> getConectionStringList();
+
+    @Option(defaultToNull = false, shortName = "t", description = "grab stack trace for each thread and present thread stack top [optional]")
+    boolean isPrintStackTrace();
+
+    @Option(defaultValue = "0", shortName = "x", description = "number of stack trace entries to display [default:1]")
+    int getStackTraceEntriesNo();
+
 }

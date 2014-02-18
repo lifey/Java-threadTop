@@ -56,9 +56,6 @@ public class ThreadTop {
         this.measureBytesAllocated = measureBytesAllocated;
         this.filterThreadRegExp = filterThreadRegExp;
         this.sortByStr = sortByStr;
-       
-
-
     }
 
     private void sortBy() {
@@ -74,13 +71,11 @@ public class ThreadTop {
     }
 
     private void enableContentionMonitoring() throws Exception {
-
         Attribute a = new Attribute("ThreadContentionMonitoringEnabled", Boolean.TRUE);
         for (JMXConnection server : servers) {
             boolean origValue = (Boolean) server.getServerConnection().getAttribute(THREADING, "ThreadContentionMonitoringEnabled");
             server.getServerConnection().setAttribute(THREADING, a);
             server.setOriginalThreadContentionEnabledValue(origValue);
-
         }
     }
 
@@ -101,7 +96,9 @@ public class ThreadTop {
     private class BlockedTimeComparator implements Comparator<MyThreadInfo> {
 
         public int compare(MyThreadInfo o1, MyThreadInfo o2) {
-            return o1.getBlockedTime() >= o2.getBlockedTime() ? -1 : 1;
+            if (o1.getBlockedTime() > o2.getBlockedTime()) return -1;
+            if (o1.getBlockedTime() < o2.getBlockedTime()) return 1;
+            return 0;
         }
     }
 
@@ -115,14 +112,21 @@ public class ThreadTop {
     private class CpuTimeComparator implements Comparator<MyThreadInfo> {
 
         public int compare(MyThreadInfo o1, MyThreadInfo o2) {
-            return o1.getCpuTime() >= o2.getCpuTime() ? -1 : 1;
+
+            if (o1.getCpuTime() > o2.getCpuTime()) return -1;
+            if (o1.getCpuTime() < o2.getCpuTime()) return 1;
+            return 0;
         }
     }
 
     private class AllocBytesComparator implements Comparator<MyThreadInfo> {
 
         public int compare(MyThreadInfo o1, MyThreadInfo o2) {
-            return o1.getAllocBytes() >= o2.getAllocBytes() ? -1 : 1;
+
+            if (o1.getAllocBytes() > o2.getAllocBytes()) return -1;
+            if (o1.getAllocBytes() < o2.getAllocBytes()) return 1;
+            return 0;
+
         }
     }
 
@@ -219,6 +223,7 @@ private void buildThreadInfo(JMXConnection server,HashMap<MyThreadInfo,MyThreadI
          
 
         for (int i = 0; i < threadsBaseData.length; i++) { // build map
+            if (threadsBaseData[i] == null) continue;
             MyThreadInfo mtis = new MyThreadInfo(server.getConnectURL(),threadsBaseData[i]);
             if (tf.matchFilter(mtis)) {
                 threadMap.put( mtis,mtis);

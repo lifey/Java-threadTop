@@ -27,15 +27,15 @@ Usage:
 =====
 The last parameters of the command line will always be a list of process ids or machineName:Port
 ThreadTop command line parameters :
- [--addAllThreadsAndWindowsPerfMonData -w]  --> Not implemented yet.
- --iterations -i value : Number of iterations [default:1]
- [--measureThreadAlloc -a]
- [--measureThreadCPU -c]
- [--measureThreadContention -d]
- --num -n value : Number of top threads to show[default:1]
- --password -p value : Set password for remote connect [optional]
- --regExp -r value : Thread name regex filter [default:.*]
- --sort -s value : Sort by CPU/CONTEND/ALLOC/NAME [default:CPU]
- --timeToMeasure -m value : Set amount of time to measure in milliseconds [default:5000]
- --user -u value : Set user for remote connect [optional]
+* --addAllThreadsAndWindowsPerfMonData -w  --> Not implemented yet.
+* --iterations -i value : Number of iterations [default:1]
+* --measureThreadAlloc -a
+* --measureThreadCPU -c
+* --measureThreadContention -d
+* --num -n value : Number of top threads to show[default:1]
+* --password -p value : Set password for remote connect [optional]
+* --regExp -r value : Thread name regex filter [default:.*]
+* --sort -s value : Sort by CPU/CONTEND/ALLOC/NAME [default:CPU]
+* --timeToMeasure -m value : Set amount of time to measure in milliseconds [default:5000]
+* --user -u value : Set user for remote connect [optional]
 

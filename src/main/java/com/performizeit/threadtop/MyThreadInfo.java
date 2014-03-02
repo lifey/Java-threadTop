@@ -62,12 +62,8 @@ public class MyThreadInfo {
         blockedTime = toLong(thread.get("blockedTime"),0);
         blockedCount = toLong(thread.get("blockedCount"), 0);
         name = (String) thread.get("threadName");
-<<<<<<< HEAD
         id = toLong(thread.get("threadId"),0);
-=======
-        id = (Long) thread.get("threadId");
         stackTraceElems = (CompositeData []) thread.get("stackTrace");
->>>>>>> 541f5d39b258a2c82c866d350359066d09a58db4
         this.procConnect = procConnect;
     }
 

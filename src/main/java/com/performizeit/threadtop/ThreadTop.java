@@ -74,10 +74,8 @@ public class ThreadTop {
         this.measureBytesAllocated = measureBytesAllocated;
         this.filterThreadRegExp = filterThreadRegExp;
         this.sortByStr = sortByStr;
-<<<<<<< HEAD
-=======
         this.stackTraceEntriesNo = stackTraceEntriesNo;
->>>>>>> 541f5d39b258a2c82c866d350359066d09a58db4
+
     }
 
     private void sortBy() {
@@ -118,6 +116,9 @@ public class ThreadTop {
     private class BlockedTimeComparator implements Comparator<MyThreadInfo> {
 
         public int compare(MyThreadInfo o1, MyThreadInfo o2) {
+            if (o1== null && o2 ==null) return 0;
+            if (o1 == null) return 1;
+            if (o2 == null) return -1;
             if (o1.getBlockedTime() > o2.getBlockedTime()) return -1;
             if (o1.getBlockedTime() < o2.getBlockedTime()) return 1;
             return 0;
@@ -127,6 +128,9 @@ public class ThreadTop {
     private class NameComparator implements Comparator<MyThreadInfo> {
 
         public int compare(MyThreadInfo o1, MyThreadInfo o2) {
+            if (o1== null && o2 ==null) return 0;
+            if (o1 == null) return 1;
+            if (o2 == null) return -1;
             return o1.getName().compareTo(o2.getName());
         }
     }
@@ -134,7 +138,9 @@ public class ThreadTop {
     private class CpuTimeComparator implements Comparator<MyThreadInfo> {
 
         public int compare(MyThreadInfo o1, MyThreadInfo o2) {
-
+            if (o1== null && o2 ==null) return 0;
+            if (o1 == null) return 1;
+            if (o2 == null) return -1;
             if (o1.getCpuTime() > o2.getCpuTime()) return -1;
             if (o1.getCpuTime() < o2.getCpuTime()) return 1;
             return 0;
@@ -144,7 +150,9 @@ public class ThreadTop {
     private class AllocBytesComparator implements Comparator<MyThreadInfo> {
 
         public int compare(MyThreadInfo o1, MyThreadInfo o2) {
-
+            if (o1== null && o2 ==null) return 0;
+            if (o1 == null) return 1;
+            if (o2 == null) return -1;
             if (o1.getAllocBytes() > o2.getAllocBytes()) return -1;
             if (o1.getAllocBytes() < o2.getAllocBytes()) return 1;
             return 0;

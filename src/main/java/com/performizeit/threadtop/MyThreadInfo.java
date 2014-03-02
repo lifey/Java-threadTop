@@ -50,17 +50,24 @@ public class MyThreadInfo {
         hash = 47 * hash + (this.procConnect != null ? this.procConnect.hashCode() : 0);
         return hash;
     }
-
-    public MyThreadInfo(String procConnect, CompositeData thread) {
-        blockedTime = 0;
-        Long t = (Long) thread.get("blockedTime");
-        if (t != null) {
-            blockedTime = t;
+    protected long toLong(Object  o,long def) {
+        if (o==null || !(o instanceof Long)) {
+            return def;
         }
-        blockedCount = (Long) thread.get("blockedCount");
+        Long l = (Long) o;
+
+        return l.longValue();
+    }
+    public MyThreadInfo(String procConnect, CompositeData thread) {
+        blockedTime = toLong(thread.get("blockedTime"),0);
+        blockedCount = toLong(thread.get("blockedCount"), 0);
         name = (String) thread.get("threadName");
+<<<<<<< HEAD
+        id = toLong(thread.get("threadId"),0);
+=======
         id = (Long) thread.get("threadId");
         stackTraceElems = (CompositeData []) thread.get("stackTrace");
+>>>>>>> 541f5d39b258a2c82c866d350359066d09a58db4
         this.procConnect = procConnect;
     }
 

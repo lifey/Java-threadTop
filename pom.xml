@@ -101,8 +101,13 @@
         <dependency>
             <groupId>com.oracle</groupId>
             <artifactId>tools</artifactId>
-            <version>7.17</version>
+            <version>7.45</version>
             
+        </dependency>
+        <dependency>
+            <groupId>org.javassist</groupId>
+            <artifactId>javassist</artifactId>
+            <version>3.14.0-GA</version>
         </dependency>
 
     </dependencies>

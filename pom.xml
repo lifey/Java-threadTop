@@ -71,9 +71,9 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
+                    <descriptors>
+                        <descriptor>assembly/bin.xml</descriptor>
+                    </descriptors>
                     <finalName>ThreadTop_${project.version}</finalName>
                     <outputDirectory>${project.build.directory}/dist</outputDirectory>
                     <workDirectory>${project.build.directory}/assembly/work</workDirectory>
@@ -85,6 +85,22 @@
                         <goals>
                             <goal>single</goal>
                         </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>${project.build.directory}/libs</outputDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -107,11 +123,18 @@
             <version>0.8.9</version>
         </dependency>
         <!-- mvn install:install-file -Dfile=tools.jar -DgroupId=com.oracle -DartifactId=tools -Dversion=7.17 -Dpackaging=jar-->
-        <dependency>
+        <!--dependency>
             <groupId>com.oracle</groupId>
             <artifactId>tools</artifactId>
             <version>7.45</version>
             
+        </dependency-->
+        <dependency>
+            <groupId>com.sun</groupId>
+            <artifactId>tools</artifactId>
+            <version>7.0</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/../lib/tools.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>

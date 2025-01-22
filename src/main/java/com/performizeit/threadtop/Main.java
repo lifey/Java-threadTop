@@ -22,18 +22,20 @@ import com.lexicalscope.jewel.cli.CliFactory;
 
 public class Main {
 
-    public static void main(String args[]) throws Exception {
+    public static void main(String[] args) throws Exception {
         if (args.length < 1) {
             String cliMessage = CliFactory.createCli(ThreadTopOptions.class).getHelpMessage();
-            String correctMessage = cliMessage.replace("ARGUMENTS...", "<ProcessId> | <hostname:port> | <ip:port>"   );
+            String correctMessage = cliMessage.replace("ARGUMENTS...", "<hostname:port> | <ip:port>"   );
             System.out.println(correctMessage);
-            System.out.println("Threadtop can connect to a process on the same machine with pid\n"+
-                    "And via JMX port for a remote process.\n"+  
-                    "To enable remote JMX and the following command line params:\n   " +
-                    "-Dcom.sun.management.jmxremote\n   " +
-                    "-Dcom.sun.management.jmxremote.port=[port]\n   " +
-                    "-Dcom.sun.management.jmxremote.authenticate=false\n   " +
-                    "-Dcom.sun.management.jmxremote.ssl=false\n");
+            System.out.println("""
+                    Threadtop can connect to a process on the same machine with pid
+                    And via JMX port for a remote process.
+                    To enable remote JMX and the following command line params:
+                    -Dcom.sun.management.jmxremote
+                    -Dcom.sun.management.jmxremote.port=[port]
+                    -Dcom.sun.management.jmxremote.authenticate=false
+                    -Dcom.sun.management.jmxremote.ssl=false
+                    """);
             System.exit(1);
         }
 
@@ -43,8 +45,8 @@ public class Main {
 
         ThreadTopOptions opts = CliFactory.parseArguments(ThreadTopOptions.class, args);
         String passwd = opts.getPassword();
-        ArrayList<JMXConnection> servers = new ArrayList<JMXConnection>();
-        if (opts.getConectionStringList().size() ==0) {
+        ArrayList<JMXConnection> servers = new ArrayList<>();
+        if (opts.getConectionStringList().isEmpty()) {
             System.out.println("Missing process id or host:port to connect");
             System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
             System.out.println("Enable remote JMX:\n   -Dcom.sun.management.jmxremote\n   -Dcom.sun.management.jmxremote.port=[port]\n   -Dcom.sun.management.jmxremote.authenticate=false\n   -Dcom.sun.management.jmxremote.ssl=false\n");
@@ -53,13 +55,7 @@ public class Main {
         for (String hostPortUser : opts.getConectionStringList()) {
 
 
-            JMXConnection server;
-            try {
-                Integer.parseInt(hostPortUser);
-                server = new JMXConnection(hostPortUser);
-            } catch (NumberFormatException e) {
-                server = new JMXConnection(hostPortUser, passwd);
-            }
+            JMXConnection server = new JMXConnection(hostPortUser, passwd);
 
             servers.add(server);
         }

@@ -4,8 +4,7 @@
  */
 package com.performizeit.threadtop;
 
-import com.lexicalscope.jewel.cli.ArgumentValidationException;
-import com.lexicalscope.jewel.cli.CliFactory;
+import picocli.CommandLine;
 
 /**
  *
@@ -13,9 +12,13 @@ import com.lexicalscope.jewel.cli.CliFactory;
  */
 public class M2 {
 
-    public static void main(String args[]) {
+    public static void main(String[] args) {
+        ThreadTopOptions opts = new ThreadTopOptions();
+        CommandLine commandLine = new CommandLine(opts);
+        
         try {
-            ThreadTopOptions opts = CliFactory.parseArguments(ThreadTopOptions.class, args);
+            commandLine.parseArgs(args);
+            
             System.out.println(opts.getTimeToMeasure());
             System.out.println(opts.isMeasureThreadCPU());
             System.out.println(opts.isMeasureThreadContention());
@@ -23,12 +26,11 @@ public class M2 {
             System.out.println(opts.getSort());
             System.out.println(opts.isPrintStackTrace());
             System.out.println(opts.getStackTraceEntriesNo());
-            System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
-        } catch (ArgumentValidationException ex) {
+            
+            commandLine.usage(System.out);
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
-            System.out.println(CliFactory.createCli(ThreadTopOptions.class).getHelpMessage());
+            commandLine.usage(System.out);
         }
-
-
     }
 }

@@ -132,9 +132,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.lexicalscope.jewelcli</groupId>
-            <artifactId>jewelcli</artifactId>
-            <version>0.8.9</version>
+            <groupId>info.picocli</groupId>
+            <artifactId>picocli</artifactId>
+            <version>4.7.5</version>
         </dependency>
     </dependencies>
 </project>

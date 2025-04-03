@@ -17,56 +17,114 @@
 package com.performizeit.threadtop;
 
 import java.util.List;
-import com.lexicalscope.jewel.cli.CommandLineInterface;
-import com.lexicalscope.jewel.cli.Option;
-import com.lexicalscope.jewel.cli.Unparsed;
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
 
 /**
  *
  * @author yadidh
  */
-@CommandLineInterface(application = "threadTop")
-public interface ThreadTopOptions {
+@Command(name = "threadTop", mixinStandardHelpOptions = true, 
+         description = "Monitor Java thread CPU, contention, and allocation usage")
+public class ThreadTopOptions {
 
-    @Option(defaultValue = "5000", shortName = "m", description = "Set amount of time to measure in milliseconds [default:5000]")
-    long getTimeToMeasure();
+    @Option(names = {"-m"}, defaultValue = "5000", description = "Set amount of time to measure in milliseconds [default: ${DEFAULT-VALUE}]")
+    private long timeToMeasure;
 
-    @Option(defaultValue = "1", shortName = "i", description = "Number of iterations [default:1]")
-    int getIterations();
+    @Option(names = {"-i"}, defaultValue = "1", description = "Number of iterations [default: ${DEFAULT-VALUE}]")
+    private int iterations;
 
-    @Option(defaultValue = "10", shortName = "n", description = "Number of top threads to show[default:10]")
-    long getNum();
+    @Option(names = {"-n"}, defaultValue = "10", description = "Number of top threads to show [default: ${DEFAULT-VALUE}]")
+    private long num;
 
-    @Option(shortName = "c")
-    boolean isMeasureThreadCPU();
+    @Option(names = {"-c"}, description = "Measure thread CPU")
+    private boolean measureThreadCPU;
 
-    @Option(shortName = "d")
-    boolean isMeasureThreadContention();
-    @Option(shortName = "w")
-    boolean isAddAllThreadsAndWindowsPerfMonData();    
+    @Option(names = {"-d"}, description = "Measure thread contention")
+    private boolean measureThreadContention;
+    
+    @Option(names = {"-w"}, description = "Add all threads and Windows PerfMon data")
+    private boolean addAllThreadsAndWindowsPerfMonData;    
 
-    @Option(shortName = "a")
-    boolean isMeasureThreadAlloc();
+    @Option(names = {"-a"}, description = "Measure thread allocation")
+    private boolean measureThreadAlloc;
 
-    @Option(defaultValue = "CPU", shortName = "s", description = "Sort by (C)PU/CONTEN(D)/(A)LLOC/(N)AME [default:C]")
-    String getSort();
+    @Option(names = {"-s"}, defaultValue = "CPU", description = "Sort by (C)PU/CONTEN(D)/(A)LLOC/(N)AME [default: ${DEFAULT-VALUE}]")
+    private String sort;
 
+    @Option(names = {"-u"}, description = "Set user for remote connect [optional]")
+    private String user;
 
-    @Option(defaultToNull = true, shortName = "u", description = "Set user for remote connect [optional]")
-    String getUser();
+    @Option(names = {"-p"}, description = "Set password for remote connect [optional]")
+    private String password;
 
-    @Option(defaultToNull = true, shortName = "p", description = "Set password for remote connect [optional]")
-    String getPassword();
+    @Option(names = {"-r"}, defaultValue = ".*", description = "Thread name regex filter [default: ${DEFAULT-VALUE}]")
+    private String regExp;
+    
+    @Parameters(paramLabel = "CONNECT", description = "pid | host:port")
+    private List<String> conectionStringList;
 
-    @Option(defaultValue = ".*", shortName = "r", description = "Thread name regex filter [default:.*]")
-    public String getRegExp();
-        @Unparsed(description = "pid | host:port ")
-    List<String> getConectionStringList();
+    @Option(names = {"-t"}, description = "Grab stack trace for each thread and present thread stack top")
+    private boolean printStackTrace;
 
-    @Option(defaultToNull = false, shortName = "t", description = "grab stack trace for each thread and present thread stack top [optional]")
-    boolean isPrintStackTrace();
+    @Option(names = {"-x"}, defaultValue = "0", description = "Number of stack trace entries to display [default: ${DEFAULT-VALUE}]")
+    private int stackTraceEntriesNo;
 
-    @Option(defaultValue = "0", shortName = "x", description = "number of stack trace entries to display [default:1]")
-    int getStackTraceEntriesNo();
+    // Getters
+    public long getTimeToMeasure() {
+        return timeToMeasure;
+    }
 
+    public int getIterations() {
+        return iterations;
+    }
+
+    public long getNum() {
+        return num;
+    }
+
+    public boolean isMeasureThreadCPU() {
+        return measureThreadCPU;
+    }
+
+    public boolean isMeasureThreadContention() {
+        return measureThreadContention;
+    }
+    
+    public boolean isAddAllThreadsAndWindowsPerfMonData() {
+        return addAllThreadsAndWindowsPerfMonData;
+    }
+
+    public boolean isMeasureThreadAlloc() {
+        return measureThreadAlloc;
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public String getRegExp() {
+        return regExp;
+    }
+
+    public List<String> getConectionStringList() {
+        return conectionStringList;
+    }
+
+    public boolean isPrintStackTrace() {
+        return printStackTrace;
+    }
+
+    public int getStackTraceEntriesNo() {
+        return stackTraceEntriesNo;
+    }
 }

@@ -142,6 +142,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.release>21</maven.compiler.release>
         <maven.minimum.version>3.6.3</maven.minimum.version>
+        <!-- Make sure jdk.attach is available at runtime -->
+        <maven.compiler.args>--add-exports java.base/jdk.internal.perf=ALL-UNNAMED</maven.compiler.args>
     </properties>
     
     <dependencies>

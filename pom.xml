@@ -34,7 +34,6 @@
                             <classpathPrefix>libs/</classpathPrefix>
                             <mainClass>com.performizeit.threadtop.Main</mainClass>
                         </manifest>
-                        
                     </archive>
                 </configuration>
             </plugin>
@@ -55,6 +54,9 @@
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
                             <archive>
+                                <manifest>
+                                    <mainClass>com.performizeit.threadtop.Main</mainClass>
+                                </manifest>
                                 <manifestEntries>
                                     <Build>${project.build}</Build>
                                     <Version>${project.version}</Version>

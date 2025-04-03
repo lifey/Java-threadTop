@@ -1,2 +1,3 @@
 #!/bin/sh
-java -cp $JAVA_HOME/lib/tools.jar:threadTop-1.1.jar com.performizeit.threadtop.Main $*
+# Run ThreadTop using the executable JAR
+java -jar threadTop-1.1.jar "$@"

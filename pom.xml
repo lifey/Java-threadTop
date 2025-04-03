@@ -39,58 +39,50 @@
                 </configuration>
             </plugin>
             <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptorRefs>
-                        <descriptorRef>jar-with-dependencies</descriptorRef>
-                    </descriptorRefs>
-                    <archive>
-                        <!--<manifest>-->
-                        <!--<mainClass>${main-class}</mainClass>-->
-                        <!--<addClasspath>true</addClasspath>-->
-                        <!--</manifest>-->
-                        <manifestEntries>
-                            <Build>${project.build}</Build>
-                            <Version>${project.version}</Version>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
+                <version>3.7.1</version>
                 <executions>
                     <execution>
+                        <id>jar-with-dependencies</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <configuration>
+                            <appendAssemblyId>false</appendAssemblyId>
+                            <descriptorRefs>
+                                <descriptorRef>jar-with-dependencies</descriptorRef>
+                            </descriptorRefs>
+                            <archive>
+                                <manifestEntries>
+                                    <Build>${project.build}</Build>
+                                    <Version>${project.version}</Version>
+                                </manifestEntries>
+                            </archive>
+                        </configuration>
                     </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.7.1</version>
-                <configuration>
-                    <descriptors>
-                        <descriptor>assembly/bin.xml</descriptor>
-                    </descriptors>
-                    <finalName>ThreadTop_${project.version}</finalName>
-                    <outputDirectory>${project.build.directory}/dist</outputDirectory>
-                    <workDirectory>${project.build.directory}/assembly/work</workDirectory>
-                </configuration>
-                <executions>
                     <execution>
                         <id>make-assembly</id>
-                        <phase>package</phase> <!-- bind to the packaging phase -->
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>assembly/bin.xml</descriptor>
+                            </descriptors>
+                            <finalName>ThreadTop_${project.version}</finalName>
+                            <outputDirectory>${project.build.directory}/dist</outputDirectory>
+                            <workDirectory>${project.build.directory}/assembly/work</workDirectory>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.8.1</version>
                 <executions>
                     <execution>
                         <id>copy-dependencies</id>
@@ -104,10 +96,32 @@
                     </execution>
                 </executions>
             </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.4.1</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.minimum.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>21</maven.compiler.release>
+        <maven.minimum.version>3.6.3</maven.minimum.version>
     </properties>
     
     <dependencies>

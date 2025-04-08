@@ -1,4 +1,3 @@
-
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
@@ -136,6 +135,72 @@
                     </dependency>
                 </dependencies>
             </plugin>
+            <plugin>
+                <groupId>org.jreleaser</groupId>
+                <artifactId>jreleaser-maven-plugin</artifactId>
+                <version>${jreleaser.version}</version>
+                <configuration>
+                    <jreleaser>
+                        <project>
+                            <name>${jreleaser.project.name}</name>
+                            <version>${project.version}</version>
+                            <description>${jreleaser.project.description}</description>
+                            <license>${jreleaser.project.license}</license>
+                            <authors>${jreleaser.project.authors}</authors>
+                            <copyright>Copyright © 2024 Haim Yadid. All rights reserved.</copyright>
+                            <links>
+                                <homepage>${jreleaser.project.website}</homepage>
+                            </links>
+                        </project>
+                        <release>
+                            <github>
+                                <owner>lifey</owner>
+                                <name>Java-threadTop</name>
+                                <token>${JRELEASER_GITHUB_TOKEN}</token>
+                                <branch>master</branch>
+                                <tagName>v{{projectVersion}}</tagName>
+                                <releaseName>Release v{{projectVersion}}</releaseName>
+                                <draft>false</draft>
+                                <overwrite>true</overwrite>
+                                <skipTag>false</skipTag>
+                            </github>
+                        </release>
+                        <packagers>
+                            <brew>
+                                <active>ALWAYS</active>
+                                <templateDirectory>${project.basedir}/src/jreleaser/brew</templateDirectory>
+                                <repository>
+                                    <owner>lifey</owner>
+                                    <name>homebrew-tap</name>
+                                </repository>
+                            </brew>
+                        </packagers>
+                        <distributions>
+                            <app>
+                                <active>ALWAYS</active>
+                                <type>JAVA_BINARY</type>
+                                <artifacts>
+                                    <artifact>
+                                        <path>${project.build.directory}/dist/ThreadTop_${project.version}-bin.zip</path>
+                                    </artifact>
+                                </artifacts>
+                                <java>
+                                    <mainClass>com.performizeit.threadtop.Main</mainClass>
+                                    <version>21</version>
+                                </java>
+                            </app>
+                        </distributions>
+                    </jreleaser>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jreleaser-release</id>
+                        <goals>
+                            <goal>release</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
     <properties>
@@ -144,6 +209,13 @@
         <maven.minimum.version>3.6.3</maven.minimum.version>
         <!-- Make sure jdk.attach is available at runtime -->
         <maven.compiler.args>--add-exports java.base/jdk.internal.perf=ALL-UNNAMED</maven.compiler.args>
+        <!-- JReleaser properties -->
+        <jreleaser.version>1.11.0</jreleaser.version>
+        <jreleaser.project.name>ThreadTop</jreleaser.project.name>
+        <jreleaser.project.description>A Java Thread monitoring tool</jreleaser.project.description>
+        <jreleaser.project.license>Apache-2.0</jreleaser.project.license>
+        <jreleaser.project.authors>Haim Yadid</jreleaser.project.authors>
+        <jreleaser.project.website>https://github.com/lifey/Java-threadTop</jreleaser.project.website>
     </properties>
     
     <dependencies>
